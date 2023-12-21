@@ -1,16 +1,33 @@
 from spawnpoint import Spawnpoint
 
+import logging as log
+
+
 class Board:    
     
     def __init__(self, filename):
         self.decrease_p = 0
         self.decrease_a = 1
-        self.max_ants = 5
+        self.max_ants = 2
         self.max_pheromone = 1
+        self.event_happend = False
         self.ticks = 0
-        self.allMail = 0
+        self.all_mail = 0
+        self.event_id = 0
+        self.is_start = True
         self.getDataFromFile(filename)
         
+        log.basicConfig(level=log.INFO, filename="sim.log", \
+                        filemode="w", format="%(message)s")
+        
+        log.info("ID T IDR EventType X Y")
+
+
+    def eventHappend(self, item):
+        self.event_id += 1
+        log.info(str(self.event_id) + f" {self.ticks} " + item.log_message)
+        self.event_happend = False
+
         
     def getDataFromFile(self, filename):
         with open(filename, 'r') as file:
@@ -47,12 +64,11 @@ class Board:
             data = file.readlines()[0]
             
             for i in data.split():
-                self.allMail += 1
+                self.all_mail += 1
                 self.mail.append(int(i))
             
     
     def eventForTick(self, decreasing = True):
-        
         self.max_pheromone = 1
         
         for i in range(len(self.data)):
@@ -62,18 +78,15 @@ class Board:
                     if (self[i][j] > self.max_pheromone):
                         self.max_pheromone = self[i][j]
         
-        print(f"Ticks {self.ticks}")
         self.ticks += 1
         
-        print(f'    Ants: {len(self.ants)}')
-        print(f'    Max Pheromone: {"%.2f" % self.max_pheromone}')
-        print(f'    Task: {self.allMail - len(self.mail) - len(self.ants)}/{self.allMail}')
-        
         for spawnpoint in self.spawns:
-            spawnpoint.run()
+            spawnpoint.run()    
         
         for ant in self.ants:
             ant.move()
+            if self.event_happend:
+                self.eventHappend(ant)
         
         if decreasing:
             self.decrease()
@@ -111,7 +124,21 @@ class Board:
                 isinstance(self[neighbours[i][0]][neighbours[i][1]], str) and \
                     self[neighbours[i][0]][neighbours[i][1]][0] == 'B':
                 
-                if (self.box[int(self[neighbours[i][0]][neighbours[i][1]][1:])-1] == load):
+                if (self.box[int(self[neighbours[i][0]][neighbours[i][1]][1:]) - 1] == load):
+                    return True
+        
+        return False
+    
+    
+    def checkEmptyLoad(self, y, x, ant):
+        neighbours = [(y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)]
+        
+        for i in range(len(neighbours)):
+            if 0 <= neighbours[i][0] < self.y and 0 <= neighbours[i][1] < self.x and \
+                isinstance(self[neighbours[i][0]][neighbours[i][1]], str) and \
+                    self[neighbours[i][0]][neighbours[i][1]] == 'S':
+                
+                if ant.load == 0:
                     return True
         
         return False

@@ -5,11 +5,11 @@ from color import fadeColor
 import time
 import pygame
 
+
 class Window:
     
     def __init__(self, map, mail, scale, console = False):
-        self.delay_show = 0.05
-        self.delay_console = 0.25
+        self.delay = 0
         self.console = console
         self.scale = scale
         
@@ -69,7 +69,7 @@ class Window:
                 
                 if self.board.ant_map[i][j] == 1:
                     self.setAntColor(i, j)
-                
+                 
         for ant in self.board.ants:
             self.setAntMailColor(ant)
             
@@ -79,7 +79,7 @@ class Window:
         self.board.eventForTick()
                 
         pygame.display.flip()
-        time.sleep(self.delay_show)
+        time.sleep(self.delay)
     
     
     def run(self):
