@@ -1,13 +1,13 @@
 from ant import Ant
 
 class Spawnpoint:
-    def __init__(self, y, x, board):
+    def __init__(self, x, y, board):
         self.x = x
         self.y = y
         self.board = board
         
     
-    def process(self):
+    def run(self):
         if self.isFree() and len(self.board.mail) > 0:
             self.spawnAnt(self.y, self.x)
             

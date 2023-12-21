@@ -1,8 +1,9 @@
-import time
-import pygame
 from board import Board
 from ant import Ant
 from color import fadeColor
+
+import time
+import pygame
 
 class Window:
     
@@ -22,7 +23,7 @@ class Window:
         
     
     def setSendFieldColor(self, i, j):
-        color = '#00FF00'
+        color = '#FF0000'
         pygame.draw.rect(self.surface, color, (j * self.scale + 2, i * self.scale + 2, self.scale - 2, self.scale - 2))
         text = self.font.render(str(self.board.box[int(self.board[i][j][1:]) - 1]), True, 'black')
         self.surface.blit(text, [j * self.scale + self.scale // 2 - 6, i * self.scale + self.scale // 2 - 6]) 
@@ -41,7 +42,8 @@ class Window:
         
     
     def setAntColor(self, i, j):
-        pygame.draw.rect(self.surface, 'black', (j * self.scale + self.scale / 2 - 4, i * self.scale + self.scale / 2 - 4, 10, 10))
+        pygame.draw.rect(self.surface, 'black', (j * self.scale + self.scale / 2 - self.scale // 5, \
+                         i * self.scale + self.scale / 2 - self.scale // 5, self.scale // 2, self.scale // 2))
     
     
     def setAntMailColor(self, ant):

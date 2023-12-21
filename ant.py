@@ -9,14 +9,19 @@ class Ant:
         self.y = y
         self.board = board
         self.load = load
-        self.fer_per_run = 300
+        self.pheromone_per_run = 500
         
         self.path = []
-        
     
-    def process(self):
+    
+    def pheromoneTrace(self):
+        for i in self.path:
+            self.board[i[0]][i[1]] += self.pheromone_per_run/len(self.path)
+     
+    
+    def move(self):
         if self.board.checkBox(self.y, self.x, self.load):
-            self.leavePheromone()
+            self.pheromoneTrace()
             self.board.ant_map[self.y][self.x] = 0
             self.board.ants.remove(self)
             return
@@ -36,8 +41,3 @@ class Ant:
         self.board.ant_map[self.y][self.x] = 0
         self.y, self.x = neighbours[ind][0], neighbours[ind][1]
         self.board.ant_map[self.y][self.x] = 1
-        
-    
-    def leavePheromone(self):
-        for i in self.path:
-            self.board[i[0]][i[1]] += self.fer_per_run/len(self.path)
